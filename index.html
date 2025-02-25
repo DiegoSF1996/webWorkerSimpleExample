@@ -22,40 +22,40 @@
 </body>
 
 <script>
+    var worker_notificacao = null;
 
     function comecarContagem() {
-        if(worker_notificacao === null){
+        if (worker_notificacao === null) {
             throw "Worker não instanciado";
         }
         worker_notificacao.postMessage({ 'cmd': 'contar', 'data': {} });
     }
     function pausarContagem() {
-        if(worker_notificacao === null){
+        if (worker_notificacao === null) {
             throw "Worker não instanciado";
         }
         worker_notificacao.postMessage({ 'cmd': 'inverterExecutarContagem', 'data': {} });
     }
     function zerarContagem() {
-        if(worker_notificacao === null){
+        if (worker_notificacao === null) {
             throw "Worker não instanciado";
         }
         worker_notificacao.postMessage({ 'cmd': 'zerarContagem', 'data': {} });
         limparLog();
     }
     function desligarWorker() {
-        if(worker_notificacao === null){
+        if (worker_notificacao === null) {
             throw "Worker não instanciado";
         }
         worker_notificacao.terminate();
         worker_notificacao = null;
         limparLog();
     }
-    function ligarWorker(){
-        if(worker_notificacao !== null){
+    function ligarWorker() {
+        if (worker_notificacao !== null) {
             throw "Worker já instanciado"
         }
         worker_notificacao = new Worker('worker_notificacao.js');
-
 
         worker_notificacao.addEventListener('message', function (e) {
             document.getElementById('logs_contagem').textContent += '\n' + e.data
@@ -65,7 +65,6 @@
         document.getElementById('logs_contagem').textContent = '';
     }
 
-    var worker_notificacao = null;
 
 
 </script>
