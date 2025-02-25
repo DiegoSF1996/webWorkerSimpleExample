@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker</title>
+</head>
+
+<body>
+    <button onclick="comecarContagem()">Iniciar Contagem</button>
+    <button onclick="pausarContagem()">Pausar Contagem</button>
+    <button onclick="zerarContagem()">Zerar Contagem</button>
+    <button onclick="ligarWorker()">Ligar</button>
+    <button onclick="desligarWorker()">Desligar</button>
+    <br>
+    <br>
+    <br>
+    <textarea id="logs_contagem">
+
+    </textarea>
+</body>
+
+<script>
+
+    function comecarContagem() {
+        if(worker_notificacao === null){
+            throw "Worker não instanciado";
+        }
+        worker_notificacao.postMessage({ 'cmd': 'contar', 'data': {} });
+    }
+    function pausarContagem() {
+        if(worker_notificacao === null){
+            throw "Worker não instanciado";
+        }
+        worker_notificacao.postMessage({ 'cmd': 'inverterExecutarContagem', 'data': {} });
+    }
+    function zerarContagem() {
+        if(worker_notificacao === null){
+            throw "Worker não instanciado";
+        }
+        worker_notificacao.postMessage({ 'cmd': 'zerarContagem', 'data': {} });
+        limparLog();
+    }
+    function desligarWorker() {
+        if(worker_notificacao === null){
+            throw "Worker não instanciado";
+        }
+        worker_notificacao.terminate();
+        worker_notificacao = null;
+        limparLog();
+    }
+    function ligarWorker(){
+        if(worker_notificacao !== null){
+            throw "Worker já instanciado"
+        }
+        worker_notificacao = new Worker('worker_notificacao.js');
+
+
+        worker_notificacao.addEventListener('message', function (e) {
+            document.getElementById('logs_contagem').textContent += '\n' + e.data
+        }, false);
+    }
+    function limparLog() {
+        document.getElementById('logs_contagem').textContent = '';
+    }
+
+    var worker_notificacao = null;
+
+
+</script>
+<style>
+    textarea {
+        width: 300px;
+        height: 150px;
+    }
+</style>
+
+</html>
